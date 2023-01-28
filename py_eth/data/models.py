@@ -162,6 +162,13 @@ class Networks:
                      api=API(key=config.FANTOM_APIKEY,
                              url='https://api.ftmscan.com/api',
                              docs='https://docs.ftmscan.com/'))
+    Celo = Network(name='celo',
+                   rpc='https://rpc.ankr.com/celo/',
+                   coin_symbol='CELO',
+                   explorer='https://celoscan.io/',
+                   api=API(key=config.CELO_APIKEY,
+                           url='https://api.celoscan.io/api',
+                           docs='https://celoscan.io/apis/'))
     Gnosis = Network(name='gnosis',
                      rpc='https://rpc.ankr.com/gnosis/',
                      coin_symbol='xDAI',
