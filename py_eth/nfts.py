@@ -3,12 +3,11 @@ from typing import Union
 from urllib.request import urlopen
 
 import requests
-from eth_typing import Address, ChecksumAddress
 from web3.contract import Contract
-from web3.types import ENS
 
 from py_eth import exceptions
-from py_eth.data.models import NFT
+from py_eth.data import types
+from py_eth.data.models import NFT, RawContract
 
 
 class NFTs:
@@ -20,16 +19,20 @@ class NFTs:
         """
         self.client = client
 
-    def get_info(self, contract: Union[str, Address, ChecksumAddress, ENS, Contract],
-                 token_id: Union[int, str] = None) -> NFT:
+    def get_info(self, contract: types.Contract, token_id: Union[int, str] = None) -> NFT:
         """
         Get information about a NFT.
 
-        :param Union[str, Address, ChecksumAddress, ENS, Contract] contract: the contract address or instance of a NFT collection
+        :param Contract contract: the contract address or instance of a NFT collection
         :param Union[int, str] token_id: the NFT ID to parse the owner and attributes (None)
         :return NFT: the NFT
         """
-        contract_address = contract.address if isinstance(contract, Contract) else contract
+        if isinstance(contract, Contract) or isinstance(contract, RawContract):
+            contract_address = contract.address
+
+        else:
+            contract_address = contract
+
         contract = self.client.contracts.default_nft(contract_address)
         nft = NFT(contract_address=contract_address)
         nft.name = contract.functions.name().call()
