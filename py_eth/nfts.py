@@ -27,12 +27,7 @@ class NFTs:
         :param Union[int, str] token_id: the NFT ID to parse the owner and attributes (None)
         :return NFT: the NFT
         """
-        if isinstance(contract, Contract) or isinstance(contract, RawContract):
-            contract_address = contract.address
-
-        else:
-            contract_address = contract
-
+        contract_address, abi = self.client.contracts.get_contract_attributes(contract)
         contract = self.client.contracts.default_nft(contract_address)
         nft = NFT(contract_address=contract_address)
         nft.name = contract.functions.name().call()

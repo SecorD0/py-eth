@@ -33,15 +33,8 @@ class Wallet:
         if not token:
             return Wei(self.client.w3.eth.get_balance(account=address))
 
-        if isinstance(token, Contract):
-            contract = token
-
-        elif isinstance(token, RawContract):
-            contract = self.client.contracts.default_token(contract_address=token.address)
-
-        else:
-            contract = self.client.contracts.default_token(contract_address=token)
-
+        contract_address, abi = self.client.contracts.get_contract_attributes(token)
+        contract = self.client.contracts.default_token(contract_address=contract_address)
         return TokenAmount(amount=contract.functions.balanceOf(address).call(),
                            decimals=contract.functions.decimals().call(), wei=True)
 
@@ -55,7 +48,7 @@ class Wallet:
         if not address:
             address = self.client.account.address
 
-        elif isinstance(address, Contract) or isinstance(address, RawContract):
-            address = address.address
+        else:
+            address, abi = self.client.contracts.get_contract_attributes(address)
 
-        return self.client.w3.eth.get_transaction_count(checksum(address))
+        return self.client.w3.eth.get_transaction_count(address)
