@@ -30,5 +30,9 @@ class GasPriceTooHigh(TransactionException):
     pass
 
 
+class FailedToApprove(TransactionException):
+    pass
+
+
 class WalletException(Exception):
     pass

@@ -686,7 +686,6 @@ class Token:
             'page': page,
             'offset': offset
         }
-
         return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
 
     def tokeninfo(self, contractaddress: str) -> Dict[str, Any]:
