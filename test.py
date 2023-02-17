@@ -4,7 +4,7 @@ import random
 from web3.contract import Contract
 
 from py_eth.client import Client
-from py_eth.data.models import Networks, Wei, Ether, GWei, TokenAmount, Network
+from py_eth.data.models import Networks, Wei, Ether, GWei, TokenAmount, Network, TxArgs
 from py_eth.transactions import Tx
 from py_eth.utils import get_coin_symbol
 
@@ -378,6 +378,23 @@ class Miscellaneous:
 ----------------------------------------------------------------------------''')
 
     @staticmethod
+    def tx_args():
+        """Initialize the custom network."""
+        client = Client(private_key=private_key)
+        args = TxArgs(
+            amount=1000000,
+            address=client.account.address,
+            pair=TxArgs(
+                suource_token='0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
+                dest_token='0x94b008aA00579c1307B0EF2c499aD98a8ce58e58'
+            ).list()
+        )
+        print(f'''{args}
+{args.list()}
+{args.tuple()}
+----------------------------------------------------------------------------''')
+
+    @staticmethod
     def units():
         """Approve token for swap."""
         print(f'''Usage for coin: {Ether(0.015200945)}
@@ -433,6 +450,7 @@ def main() -> None:
     print('\n--------- Miscellaneous ---------')
     miscellaneous = Miscellaneous()
     miscellaneous.custom_network()
+    miscellaneous.tx_args()
     miscellaneous.units()
     miscellaneous.change_decimals()
 

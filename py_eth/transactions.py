@@ -10,7 +10,7 @@ from web3.types import TxReceipt, _Hash32, TxParams, Address
 from py_eth import exceptions
 from py_eth.data import types
 from py_eth.data.models import (TxHistory, RawTxHistory, GWei, Wei, Ether, TokenAmount, CommonValues, CoinTx,
-                                RawContract)
+                                RawContract, TxArgs)
 from py_eth.utils import api_key_required, checksum
 
 
@@ -414,7 +414,7 @@ class Transactions:
                 'gasPrice': gas_price.Wei,
                 'from': self.client.account.address,
                 'to': contract.address,
-                'data': contract.encodeABI('transfer', args=(recipient, amount))
+                'data': contract.encodeABI('transfer', args=TxArgs(recipient=recipient, amount=amount).tuple())
             }
 
         else:
@@ -498,7 +498,7 @@ class Transactions:
             'gasPrice': gas_price.Wei,
             'from': self.client.account.address,
             'to': contract.address,
-            'data': contract.encodeABI('approve', args=(spender, amount))
+            'data': contract.encodeABI('approve', args=TxArgs(spender=spender, amount=amount).tuple())
         }
 
         if not gas_limit:
