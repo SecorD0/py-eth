@@ -466,6 +466,32 @@ Great and equal
 0.5 >= 0.03: {0.5 >= Ether(0.03)}''')
 
     @staticmethod
+    def unit_advanced_math_operations():
+        """Example of advanced mathematical operations on a Unit instance."""
+        print('\n--- unit_advanced_math_operations ---')
+        amount = Wei(100)
+        print(f'Before the transformation: {amount.Wei}')
+        amount += 20 + Wei(5)
+        print(f'After: {amount.Wei}\n')
+
+        amount = GWei(4.1)
+        print(f'Before the transformation: {amount.GWei}')
+        amount -= 2.0
+        # amount -= 2.0 - GWei(1)  # Works incorrect
+        print(f'After: {amount.GWei}\n')
+
+        amount = Wei(3020)
+        print(f'Before the transformation: {amount.Wei}')
+        amount *= Wei(100) * 8
+        print(f'After: {amount.Wei}\n')
+
+        amount = Ether(0.5)
+        print(f'Before the transformation: {amount.Ether}')
+        amount /= 0.1
+        # amount /= 0.1 - Ether(0.03)  # Works incorrect
+        print(f'After: {amount.Ether}')
+
+    @staticmethod
     def token_amount_math_operations():
         """Example of mathematical operations on a TokenAmount instance."""
         print('\n--- token_amount_math_operations ---')
@@ -504,6 +530,32 @@ Great than
 Great and equal
 100 >= 100: {TokenAmount(100, decimals=6) >= 100.0}
 2.0 >= 4.1: {2.0 >= TokenAmount(4.1, decimals=6)}''')
+
+    @staticmethod
+    def token_amount_advanced_math_operations():
+        """Example of advanced mathematical operations on a TokenAmount instance."""
+        print('\n--- token_amount_advanced_math_operations ---')
+        amount = TokenAmount(100, decimals=6)
+        print(f'Before the transformation: {amount.Ether}')
+        amount += 20.0 + TokenAmount(5, decimals=6)
+        print(f'After: {amount.Ether}\n')
+
+        amount = TokenAmount(100, decimals=6)
+        print(f'Before the transformation: {amount.Ether}')
+        amount -= 20.0
+        # amount -= 20.0 - TokenAmount(5, decimals=6)  # Works incorrect
+        print(f'After: {amount.Ether}\n')
+
+        amount = TokenAmount(100, decimals=6)
+        print(f'Before the transformation: {amount.Ether}')
+        amount *= 20.0 * TokenAmount(5, decimals=6)
+        print(f'After: {amount.Ether}\n')
+
+        amount = TokenAmount(100, decimals=6)
+        print(f'Before the transformation: {amount.Ether}')
+        amount /= 20.0
+        # amount /= 20.0 / TokenAmount(5, decimals=6)  # Works incorrect
+        print(f'After: {amount.Ether}')
 
     @staticmethod
     def change_decimals():
@@ -556,7 +608,9 @@ def main() -> None:
     miscellaneous.tx_args()
     miscellaneous.units()
     miscellaneous.unit_math_operations()
+    miscellaneous.unit_advanced_math_operations()
     miscellaneous.token_amount_math_operations()
+    miscellaneous.token_amount_advanced_math_operations()
     miscellaneous.change_decimals()
 
 
