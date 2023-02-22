@@ -100,7 +100,7 @@ class Tx(AutoRepr):
             if not gas_price:
                 gas_price = Transactions.current_gas_price(w3=client.w3).Wei
 
-            elif isinstance(gas_price, float) or isinstance(gas_price, int):
+            elif isinstance(gas_price, (int, float)):
                 gas_price = GWei(gas_price).Wei
 
             if gas_price < self.params.get('gasPrice') * 1.11:
@@ -144,7 +144,7 @@ class Tx(AutoRepr):
             if not gas_price:
                 gas_price = int(Transactions.current_gas_price(w3=client.w3).Wei * 1.5)
 
-            elif isinstance(gas_price, float) or isinstance(gas_price, int):
+            elif isinstance(gas_price, (int, float)):
                 gas_price = GWei(gas_price).Wei
 
             tx_params = self.params.copy()
@@ -381,7 +381,7 @@ class Transactions:
             contract_address, abi = self.client.contracts.get_contract_attributes(token)
             contract = self.client.contracts.default_token(contract_address)
 
-        if isinstance(amount, float) or isinstance(amount, int):
+        if isinstance(amount, (int, float)):
             if contract:
                 amount = TokenAmount(amount=amount, decimals=contract.functions.decimals().call())
 
@@ -395,7 +395,7 @@ class Transactions:
             gas_price = current_gas_price
 
         elif gas_price:
-            if isinstance(gas_price, float) or isinstance(gas_price, int):
+            if isinstance(gas_price, (int, float)):
                 gas_price = GWei(gas_price)
 
         if check_gas_price and current_gas_price > gas_price:
@@ -470,7 +470,7 @@ class Transactions:
         if not amount:
             amount = CommonValues.InfinityInt
 
-        elif isinstance(amount, float) or isinstance(amount, int):
+        elif isinstance(amount, (int, float)):
             amount = TokenAmount(amount=amount, decimals=contract.functions.decimals().call()).Wei
 
         else:
@@ -483,7 +483,7 @@ class Transactions:
             gas_price = current_gas_price
 
         elif gas_price:
-            if isinstance(gas_price, float) or isinstance(gas_price, int):
+            if isinstance(gas_price, (int, float)):
                 gas_price = GWei(gas_price)
 
         if check_gas_price and current_gas_price > gas_price:

@@ -83,7 +83,7 @@ class Contracts:
         :param Contract contract: the contract address or instance
         :return Tuple[ChecksumAddress, Optional[list]]: the checksummed contract address and ABI
         """
-        if isinstance(contract, Contract) or isinstance(contract, RawContract):
+        if isinstance(contract, (Contract, RawContract)):
             return contract.address, contract.abi
 
         return checksum(contract), None
@@ -174,14 +174,15 @@ class Contracts:
         """
         contract_address, contract_abi = self.get_contract_attributes(contract_address)
         if not abi and not contract_abi:
-            contract_abi = self.get_abi(contract_address=contract_address)
+            if proxy_address:
+                proxy_address, proxy_abi = self.get_contract_attributes(proxy_address)
+                if not proxy_abi:
+                    proxy_abi = self.get_abi(contract_address=proxy_address)
 
-        if proxy_address:
-            proxy_address, proxy_abi = self.get_contract_attributes(proxy_address)
-            if not proxy_abi:
-                proxy_abi = self.get_abi(contract_address=proxy_address)
+                contract_abi = proxy_abi
 
-            contract_abi = proxy_abi
+            else:
+                contract_abi = self.get_abi(contract_address=contract_address)
 
         if not abi:
             abi = contract_abi
