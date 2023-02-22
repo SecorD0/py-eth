@@ -237,7 +237,7 @@ ERC-721: {len(history.erc721.all)}
         """Get approved amount of token."""
         print('\n--- approved_amount ---')
         client = Client(private_key='', network=Networks.Ethereum)
-        token = client.contracts.get(contract_address='0xf4d2888d29D722226FafA5d9B24F9164c092421E')
+        token = client.contracts.default_token(contract_address='0xf4d2888d29D722226FafA5d9B24F9164c092421E')
         spender = '0xe592427a0aece92de3edee1f18e0157c05861564'
         owner = '0x6a32729ae1a19f0cafd468d0082a1a9355167692'
         approved_amount = client.transactions.approved_amount(token=token, spender=spender, owner=owner)
@@ -569,7 +569,7 @@ Instance from Wei amount: {TokenAmount(amount=500734670000000008192, wei=True)}'
 
 
 def main() -> None:
-    print('\n--------- Account ---------')
+    print('--------- Account ---------')
     account = Account()
     account.generate_wallets()
     account.show_coin_balance()

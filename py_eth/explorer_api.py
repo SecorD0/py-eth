@@ -41,20 +41,22 @@ class APIFunctions:
     def __init__(self, key: str, url: str) -> None:
         self.key = key
         self.url = url
-        self.account = Account(self.key, self.url)
-        self.contract = Contract(self.key, self.url)
-        self.transaction = Transaction(self.key, self.url)
-        self.block = Block(self.key, self.url)
-        self.logs = Logs(self.key, self.url)
-        self.token = Token(self.key, self.url)
-        self.gastracker = Gastracker(self.key, self.url)
-        self.stats = Stats(self.key, self.url)
+        self.headers = {'User-Agent': UserAgent().chrome}
+        self.account = Account(self.key, self.url, self.headers)
+        self.contract = Contract(self.key, self.url, self.headers)
+        self.transaction = Transaction(self.key, self.url, self.headers)
+        self.block = Block(self.key, self.url, self.headers)
+        self.logs = Logs(self.key, self.url, self.headers)
+        self.token = Token(self.key, self.url, self.headers)
+        self.gastracker = Gastracker(self.key, self.url, self.headers)
+        self.stats = Stats(self.key, self.url, self.headers)
 
 
 class Account:
-    def __init__(self, key: str, url: str) -> None:
+    def __init__(self, key: str, url: str, headers: Dict[str, Any]) -> None:
         self.key = key
         self.url = url
+        self.headers = headers
         self.module = 'account'
 
     def balance(self, address: str, tag: Union[str, Tag] = Tag.Latest) -> Dict[str, Any]:
@@ -78,7 +80,7 @@ class Account:
             'address': address,
             'tag': tag
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def balancemulti(self, addresses: List[str], tag: Union[str, Tag] = Tag.Latest) -> Dict[str, Any]:
         """
@@ -101,7 +103,7 @@ class Account:
             'address': addresses,
             'tag': tag
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def txlist(self, address: str, startblock: Optional[int] = None, endblock: Optional[int] = None,
                page: Optional[int] = None, offset: Optional[int] = None,
@@ -134,7 +136,7 @@ class Account:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def txlistinternal(self, address: Optional[str] = None, txhash: Optional[str] = None,
                        startblock: Optional[int] = None, endblock: Optional[int] = None, page: Optional[int] = None,
@@ -184,7 +186,7 @@ class Account:
             params['page'] = page
             params['offset'] = offset
 
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def tokentx(self, address: str, contractaddress: Optional[str] = None, startblock: Optional[int] = None,
                 endblock: Optional[int] = None, page: Optional[int] = None, offset: Optional[int] = None,
@@ -219,7 +221,7 @@ class Account:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def tokennfttx(self, address: str, contractaddress: Optional[str] = None, startblock: Optional[int] = None,
                    endblock: Optional[int] = None, page: Optional[int] = None, offset: Optional[int] = None,
@@ -254,7 +256,7 @@ class Account:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def token1155tx(self, address: str, contractaddress: Optional[str] = None, startblock: Optional[int] = None,
                     endblock: Optional[int] = None, page: Optional[int] = None, offset: Optional[int] = None,
@@ -289,7 +291,7 @@ class Account:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def getminedblocks(self, address: str, blocktype: Union[str, BlockType] = BlockType.Blocks,
                        page: Optional[int] = None, offset: Optional[int] = None) -> Dict[str, Any]:
@@ -317,7 +319,7 @@ class Account:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def balancehistory(self, address: str, blockno: int) -> Dict[str, Any]:
         """
@@ -337,7 +339,7 @@ class Account:
             'address': address,
             'blockno': blockno
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def tokenbalance(self, contractaddress: str, address: str) -> Dict[str, Any]:
         """
@@ -357,7 +359,7 @@ class Account:
             'contractaddress': contractaddress,
             'address': address
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def tokenbalancehistory(self, contractaddress: str, address: str, blockno: int) -> Dict[str, Any]:
         """
@@ -379,7 +381,7 @@ class Account:
             'address': address,
             'blockno': blockno
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def addresstokenbalance(self, address: str, page: Optional[int] = None,
                             offset: Optional[int] = None) -> Dict[str, Any]:
@@ -402,7 +404,7 @@ class Account:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def addresstokennftbalance(self, address: str, page: Optional[int] = None,
                                offset: Optional[int] = None) -> Dict[str, Any]:
@@ -425,7 +427,7 @@ class Account:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def addresstokennftinventory(self, address: str, page: Optional[int] = None,
                                  offset: Optional[int] = None) -> Dict[str, Any]:
@@ -448,13 +450,14 @@ class Account:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
 
 class Contract:
-    def __init__(self, key: str, url: str) -> None:
+    def __init__(self, key: str, url: str, headers: Dict[str, Any]) -> None:
         self.key = key
         self.url = url
+        self.headers = headers
         self.module = 'contract'
 
     def getabi(self, address: str) -> Dict[str, Any]:
@@ -473,7 +476,7 @@ class Contract:
             'apikey': self.key,
             'address': address
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def getsourcecode(self, address: str) -> Dict[str, Any]:
         """
@@ -491,7 +494,7 @@ class Contract:
             'apikey': self.key,
             'address': address
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def getcontractcreation(self, addresses: List[str]) -> Dict[str, Any]:
         """
@@ -509,13 +512,14 @@ class Contract:
             'apikey': self.key,
             'address': addresses
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
 
 class Transaction:
-    def __init__(self, key: str, url: str) -> None:
+    def __init__(self, key: str, url: str, headers: Dict[str, Any]) -> None:
         self.key = key
         self.url = url
+        self.headers = headers
         self.module = 'transaction'
 
     def getstatus(self, txhash: str) -> Dict[str, Any]:
@@ -534,7 +538,7 @@ class Transaction:
             'apikey': self.key,
             'txhash': txhash
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def gettxreceiptstatus(self, txhash: str) -> Dict[str, Any]:
         """
@@ -552,13 +556,14 @@ class Transaction:
             'apikey': self.key,
             'txhash': txhash
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
 
 class Block:
-    def __init__(self, key: str, url: str) -> None:
+    def __init__(self, key: str, url: str, headers: Dict[str, Any]) -> None:
         self.key = key
         self.url = url
+        self.headers = headers
         self.module = 'block'
 
     def getblockreward(self, blockno: int) -> Dict[str, Any]:
@@ -577,7 +582,7 @@ class Block:
             'apikey': self.key,
             'blockno': blockno
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def getblockcountdown(self, blockno: int) -> Dict[str, Any]:
         """
@@ -595,7 +600,7 @@ class Block:
             'apikey': self.key,
             'blockno': blockno
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def getblocknobytime(self, timestamp: int, closest: Union[str, Closest] = Closest.Before) -> Dict[str, Any]:
         """
@@ -618,13 +623,14 @@ class Block:
             'timestamp': timestamp,
             'closest': closest
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
 
 class Logs:
-    def __init__(self, key: str, url: str) -> None:
+    def __init__(self, key: str, url: str, headers: Dict[str, Any]) -> None:
         self.key = key
         self.url = url
+        self.headers = headers
         self.module = 'log'
 
     def getLogs(self, address: Optional[str], fromBlock: Optional[int], toBlock: Optional[int],
@@ -656,13 +662,14 @@ class Logs:
         for key, value in kwargs.items():
             params[key] = value
 
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
 
 class Token:
-    def __init__(self, key: str, url: str) -> None:
+    def __init__(self, key: str, url: str, headers: Dict[str, Any]) -> None:
         self.key = key
         self.url = url
+        self.headers = headers
         self.module = 'token'
 
     def tokenholderlist(self, contractaddress: str, page: Optional[int] = None,
@@ -686,7 +693,7 @@ class Token:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def tokeninfo(self, contractaddress: str) -> Dict[str, Any]:
         """
@@ -704,13 +711,14 @@ class Token:
             'apikey': self.key,
             'contractaddress': contractaddress
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
 
 class Gastracker:
-    def __init__(self, key: str, url: str) -> None:
+    def __init__(self, key: str, url: str, headers: Dict[str, Any]) -> None:
         self.key = key
         self.url = url
+        self.headers = headers
         self.module = 'gastracker'
 
     def gasestimate(self, gasprice: int) -> Dict[str, Any]:
@@ -729,7 +737,7 @@ class Gastracker:
             'apikey': self.key,
             'gasprice': gasprice
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def gasoracle(self) -> Dict[str, Any]:
         """
@@ -745,13 +753,14 @@ class Gastracker:
             'action': action,
             'apikey': self.key
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
 
 class Stats:
-    def __init__(self, key: str, url: str) -> None:
+    def __init__(self, key: str, url: str, headers: Dict[str, Any]) -> None:
         self.key = key
         self.url = url
+        self.headers = headers
         self.module = 'stats'
 
     def ethsupply(self) -> Dict[str, Any]:
@@ -768,7 +777,7 @@ class Stats:
             'action': action,
             'apikey': self.key
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def ethsupply2(self) -> Dict[str, Any]:
         """
@@ -784,7 +793,7 @@ class Stats:
             'action': action,
             'apikey': self.key
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def ethprice(self) -> Dict[str, Any]:
         """
@@ -800,7 +809,7 @@ class Stats:
             'action': action,
             'apikey': self.key
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def chainsize(self, startdate: str, enddate: str, clienttype: Union[str, ClientType] = ClientType.Geth,
                   syncmode: Union[str, SyncMode] = SyncMode.Default,
@@ -837,7 +846,7 @@ class Stats:
             'syncmode': syncmode,
             'sort': sort
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def nodecount(self) -> Dict[str, Any]:
         """
@@ -853,7 +862,7 @@ class Stats:
             'action': action,
             'apikey': self.key
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def general(self, action: str, startdate: str, enddate: str, sort: Union[str, Sort] = Sort.Asc) -> Dict[str, Any]:
         """
@@ -876,7 +885,7 @@ class Stats:
             'enddate': enddate,
             'sort': sort
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def dailytxnfee(self, startdate: str, enddate: str, sort: Union[str, Sort] = Sort.Asc) -> Dict[str, Any]:
         """
@@ -1102,7 +1111,7 @@ class Stats:
             'apikey': self.key,
             'contractaddress': contractaddress
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()
 
     def tokensupplyhistory(self, contractaddress: str, blockno: int) -> Dict[str, Any]:
         """
@@ -1122,4 +1131,4 @@ class Stats:
             'contractaddress': contractaddress,
             'blockno': blockno
         }
-        return requests.get(self.url, params=params, headers={'User-Agent': UserAgent().chrome}).json()
+        return requests.get(self.url, params=params, headers=self.headers).json()

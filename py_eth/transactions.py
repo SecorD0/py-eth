@@ -331,14 +331,14 @@ class Transactions:
         return txs
 
     def approved_amount(self, token: types.Contract, spender: types.Contract,
-                        owner: Optional[types.Address] = None) -> Wei:
+                        owner: Optional[types.Address] = None) -> TokenAmount:
         """
         Get approved amount of token.
 
         :param Contract token: the contract address or instance of token
         :param Contract spender: the spender address, contract address or instance
         :param Optional[Address] owner: the owner address (imported to client address)
-        :return Wei: the approved amount
+        :return TokenAmount: the approved amount
         """
         contract_address, abi = self.client.contracts.get_contract_attributes(token)
         contract = self.client.contracts.default_token(contract_address)
@@ -346,7 +346,8 @@ class Transactions:
         if not owner:
             owner = self.client.account.address
 
-        return Wei(contract.functions.allowance(checksum(owner), checksum(spender)).call())
+        return TokenAmount(amount=contract.functions.allowance(checksum(owner), checksum(spender)).call(),
+                           decimals=contract.functions.decimals().call(), wei=True)
 
     def wait_for_receipt(self, tx_hash: Union[str, _Hash32], timeout: Union[int, float] = 120) -> Dict[str, Any]:
         """
