@@ -75,15 +75,18 @@ class Tx(AutoRepr):
 
         return self.function_identifier, self.input_data
 
-    def wait_for_receipt(self, client, timeout: Union[int, float] = 120) -> Dict[str, Any]:
+    def wait_for_receipt(self, client, timeout: Union[int, float] = 120, poll_latency: float = 0.1) -> Dict[str, Any]:
         """
         Wait for the transaction receipt.
 
         :param Client client: the Client instance
-        :param Union[int, float] timeout: the receipt waiting timeout (120)
+        :param Union[int, float] timeout: the receipt waiting timeout (120 sec)
+        :param float poll_latency: the poll latency (0.1 sec)
         :return Dict[str, Any]: the transaction receipt
         """
-        self.receipt = dict(client.w3.eth.wait_for_transaction_receipt(transaction_hash=self.hash, timeout=timeout))
+        self.receipt = dict(client.w3.eth.wait_for_transaction_receipt(
+            transaction_hash=self.hash, timeout=timeout, poll_latency=poll_latency
+        ))
         return self.receipt
 
     def cancel(self, client, gas_price: Optional[types.GasPrice] = None,
@@ -349,15 +352,19 @@ class Transactions:
         return TokenAmount(amount=contract.functions.allowance(checksum(owner), checksum(spender)).call(),
                            decimals=contract.functions.decimals().call(), wei=True)
 
-    def wait_for_receipt(self, tx_hash: Union[str, _Hash32], timeout: Union[int, float] = 120) -> Dict[str, Any]:
+    def wait_for_receipt(self, tx_hash: Union[str, _Hash32], timeout: Union[int, float] = 120,
+                         poll_latency: float = 0.1) -> Dict[str, Any]:
         """
         Wait for a transaction receipt.
 
         :param Union[str, _Hash32] tx_hash: the transaction hash
         :param Union[int, float] timeout: the receipt waiting timeout (120)
+        :param float poll_latency: the poll latency (0.1 sec)
         :return Dict[str, Any]: the transaction receipt
         """
-        return dict(self.client.w3.eth.wait_for_transaction_receipt(transaction_hash=tx_hash, timeout=timeout))
+        return dict(self.client.w3.eth.wait_for_transaction_receipt(
+            transaction_hash=tx_hash, timeout=timeout, poll_latency=poll_latency
+        ))
 
     def send(self, token: types.Contract, recipient: types.Address, amount: types.Amount = 999_999_999_999_999,
              gas_price: Optional[types.GasPrice] = None, gas_limit: Optional[types.GasLimit] = None,
