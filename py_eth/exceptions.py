@@ -1,3 +1,8 @@
+from typing import Optional
+
+import requests
+
+
 class ClientException(Exception):
     pass
 
@@ -40,3 +45,17 @@ class FailedToApprove(TransactionException):
 
 class WalletException(Exception):
     pass
+
+
+class HTTPException(Exception):
+    def __init__(self, response: Optional[requests.Response] = None) -> None:
+        self.response = response
+        self.json_response = self.response.json()
+        if self.response:
+            self.status_code = response.status_code
+
+    def __str__(self):
+        if self.json_response:
+            return f'{self.status_code}: {self.json_response}'
+
+        return f'{self.status_code}'

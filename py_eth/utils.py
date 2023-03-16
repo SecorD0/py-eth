@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 
 import requests
 from eth_typing import ChecksumAddress
@@ -11,7 +11,7 @@ def api_key_required(func):
     """Check if the explorer API key is specified."""
 
     def func_wrapper(self, *args, **kwargs):
-        if not self.client.network.api.key:
+        if not self.client.network.api.key or not self.client.network.api.functions:
             raise exceptions.APIException('To use this function, you must specify the explorer API key!')
 
         else:
@@ -30,6 +30,26 @@ def checksum(address: str) -> ChecksumAddress:
     return to_checksum_address(address)
 
 
+def requests_get(url: str, **kwargs) -> Optional[dict]:
+    """
+    Make a GET request and check if it was successful.
+
+    :param str url: a URL
+    :param kwargs: arguments for a GET request, e.g. 'params', 'headers', 'data' or 'json'
+    :return Optional[dict]: received dictionary in response
+    """
+    response = requests.get(url, **kwargs)
+    json_response = response.json()
+    if response.status_code <= 201:
+        status = json_response.get('status')
+        if status is not None and not int(status):
+            raise exceptions.HTTPException(response=response)
+
+        return json_response
+
+    raise exceptions.HTTPException(response=response)
+
+
 def get_coin_symbol(chain_id: Union[int, str]) -> str:
     """
     Get a coin symbol on a network with the specified ID.
@@ -37,7 +57,7 @@ def get_coin_symbol(chain_id: Union[int, str]) -> str:
     :param Union[int, str] chain_id: the network ID
     :return str: the coin symbol
     """
-    response = requests.get('https://chainid.network/chains.json').json()
+    response = requests_get('https://chainid.network/chains.json')
     network = next((network for network in response if network['chainId'] == int(chain_id)), None)
     if network:
         return network['nativeCurrency']['symbol']

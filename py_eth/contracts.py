@@ -2,7 +2,6 @@ import json
 import time
 from typing import Union, Optional, List, Dict, Any, Tuple
 
-import requests
 from eth_typing import ChecksumAddress
 from evmdasm import EvmBytecode
 from pretty_utils.type_functions.strings import text_between
@@ -10,7 +9,7 @@ from web3.contract import Contract
 
 from py_eth.data import types
 from py_eth.data.models import DefaultABIs, ABI, Function, RawContract
-from py_eth.utils import checksum
+from py_eth.utils import checksum, requests_get
 
 
 class Contracts:
@@ -31,8 +30,8 @@ class Contracts:
         :return Optional[list]: matches found
         """
         try:
-            response = requests.get(f'https://www.4byte.directory/api/v1/signatures/?hex_signature={hex_signature}')
-            results = response.json()['results']
+            response = requests_get(f'https://www.4byte.directory/api/v1/signatures/?hex_signature={hex_signature}')
+            results = response['results']
             return [m['text_signature'] for m in sorted(results, key=lambda result: result['created_at'])]
 
         except:

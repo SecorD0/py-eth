@@ -2,12 +2,12 @@ import json
 from typing import Union
 from urllib.request import urlopen
 
-import requests
 from web3.contract import Contract
 
 from py_eth import exceptions
 from py_eth.data import types
-from py_eth.data.models import NFT, RawContract
+from py_eth.data.models import NFT
+from py_eth.utils import requests_get
 
 
 class NFTs:
@@ -55,7 +55,7 @@ class NFTs:
                         image_url = image_url.replace('ipfs://', 'https://ipfs.io/ipfs/')
 
                     nft.image_url = image_url
-                    response = requests.get(image_url).json()
+                    response = requests_get(image_url)
 
                 if 'attributes' in response and response['attributes']:
                     nft.parse_attributes(response['attributes'])

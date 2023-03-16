@@ -1,9 +1,9 @@
 from typing import Optional, Union, List, Dict, Any
 
-import requests
 from fake_useragent import UserAgent
 
 from py_eth import exceptions
+from py_eth.utils import requests_get
 
 
 class Tag:
@@ -80,7 +80,7 @@ class Account:
             'address': address,
             'tag': tag
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def balancemulti(self, addresses: List[str], tag: Union[str, Tag] = Tag.Latest) -> Dict[str, Any]:
         """
@@ -103,7 +103,7 @@ class Account:
             'address': addresses,
             'tag': tag
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def txlist(self, address: str, startblock: Optional[int] = None, endblock: Optional[int] = None,
                page: Optional[int] = None, offset: Optional[int] = None,
@@ -136,7 +136,7 @@ class Account:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def txlistinternal(self, address: Optional[str] = None, txhash: Optional[str] = None,
                        startblock: Optional[int] = None, endblock: Optional[int] = None, page: Optional[int] = None,
@@ -186,7 +186,7 @@ class Account:
             params['page'] = page
             params['offset'] = offset
 
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def tokentx(self, address: str, contractaddress: Optional[str] = None, startblock: Optional[int] = None,
                 endblock: Optional[int] = None, page: Optional[int] = None, offset: Optional[int] = None,
@@ -221,7 +221,7 @@ class Account:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def tokennfttx(self, address: str, contractaddress: Optional[str] = None, startblock: Optional[int] = None,
                    endblock: Optional[int] = None, page: Optional[int] = None, offset: Optional[int] = None,
@@ -256,7 +256,7 @@ class Account:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def token1155tx(self, address: str, contractaddress: Optional[str] = None, startblock: Optional[int] = None,
                     endblock: Optional[int] = None, page: Optional[int] = None, offset: Optional[int] = None,
@@ -291,7 +291,7 @@ class Account:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def getminedblocks(self, address: str, blocktype: Union[str, BlockType] = BlockType.Blocks,
                        page: Optional[int] = None, offset: Optional[int] = None) -> Dict[str, Any]:
@@ -319,7 +319,7 @@ class Account:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def balancehistory(self, address: str, blockno: int) -> Dict[str, Any]:
         """
@@ -339,7 +339,7 @@ class Account:
             'address': address,
             'blockno': blockno
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def tokenbalance(self, contractaddress: str, address: str) -> Dict[str, Any]:
         """
@@ -359,7 +359,7 @@ class Account:
             'contractaddress': contractaddress,
             'address': address
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def tokenbalancehistory(self, contractaddress: str, address: str, blockno: int) -> Dict[str, Any]:
         """
@@ -381,7 +381,7 @@ class Account:
             'address': address,
             'blockno': blockno
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def addresstokenbalance(self, address: str, page: Optional[int] = None,
                             offset: Optional[int] = None) -> Dict[str, Any]:
@@ -404,7 +404,7 @@ class Account:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def addresstokennftbalance(self, address: str, page: Optional[int] = None,
                                offset: Optional[int] = None) -> Dict[str, Any]:
@@ -427,7 +427,7 @@ class Account:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def addresstokennftinventory(self, address: str, page: Optional[int] = None,
                                  offset: Optional[int] = None) -> Dict[str, Any]:
@@ -450,7 +450,7 @@ class Account:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
 
 class Contract:
@@ -476,7 +476,7 @@ class Contract:
             'apikey': self.key,
             'address': address
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def getsourcecode(self, address: str) -> Dict[str, Any]:
         """
@@ -494,7 +494,7 @@ class Contract:
             'apikey': self.key,
             'address': address
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def getcontractcreation(self, addresses: List[str]) -> Dict[str, Any]:
         """
@@ -512,7 +512,7 @@ class Contract:
             'apikey': self.key,
             'address': addresses
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
 
 class Transaction:
@@ -538,7 +538,7 @@ class Transaction:
             'apikey': self.key,
             'txhash': txhash
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def gettxreceiptstatus(self, txhash: str) -> Dict[str, Any]:
         """
@@ -556,7 +556,7 @@ class Transaction:
             'apikey': self.key,
             'txhash': txhash
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
 
 class Block:
@@ -582,7 +582,7 @@ class Block:
             'apikey': self.key,
             'blockno': blockno
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def getblockcountdown(self, blockno: int) -> Dict[str, Any]:
         """
@@ -600,7 +600,7 @@ class Block:
             'apikey': self.key,
             'blockno': blockno
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def getblocknobytime(self, timestamp: int, closest: Union[str, Closest] = Closest.Before) -> Dict[str, Any]:
         """
@@ -623,7 +623,7 @@ class Block:
             'timestamp': timestamp,
             'closest': closest
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
 
 class Logs:
@@ -662,7 +662,7 @@ class Logs:
         for key, value in kwargs.items():
             params[key] = value
 
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
 
 class Token:
@@ -693,7 +693,7 @@ class Token:
             'page': page,
             'offset': offset
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def tokeninfo(self, contractaddress: str) -> Dict[str, Any]:
         """
@@ -711,7 +711,7 @@ class Token:
             'apikey': self.key,
             'contractaddress': contractaddress
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
 
 class Gastracker:
@@ -737,7 +737,7 @@ class Gastracker:
             'apikey': self.key,
             'gasprice': gasprice
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def gasoracle(self) -> Dict[str, Any]:
         """
@@ -753,7 +753,7 @@ class Gastracker:
             'action': action,
             'apikey': self.key
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
 
 class Stats:
@@ -777,7 +777,7 @@ class Stats:
             'action': action,
             'apikey': self.key
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def ethsupply2(self) -> Dict[str, Any]:
         """
@@ -793,7 +793,7 @@ class Stats:
             'action': action,
             'apikey': self.key
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def ethprice(self) -> Dict[str, Any]:
         """
@@ -809,7 +809,7 @@ class Stats:
             'action': action,
             'apikey': self.key
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def chainsize(self, startdate: str, enddate: str, clienttype: Union[str, ClientType] = ClientType.Geth,
                   syncmode: Union[str, SyncMode] = SyncMode.Default,
@@ -846,7 +846,7 @@ class Stats:
             'syncmode': syncmode,
             'sort': sort
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def nodecount(self) -> Dict[str, Any]:
         """
@@ -862,7 +862,7 @@ class Stats:
             'action': action,
             'apikey': self.key
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def general(self, action: str, startdate: str, enddate: str, sort: Union[str, Sort] = Sort.Asc) -> Dict[str, Any]:
         """
@@ -885,7 +885,7 @@ class Stats:
             'enddate': enddate,
             'sort': sort
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def dailytxnfee(self, startdate: str, enddate: str, sort: Union[str, Sort] = Sort.Asc) -> Dict[str, Any]:
         """
@@ -1111,7 +1111,7 @@ class Stats:
             'apikey': self.key,
             'contractaddress': contractaddress
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
 
     def tokensupplyhistory(self, contractaddress: str, blockno: int) -> Dict[str, Any]:
         """
@@ -1131,4 +1131,4 @@ class Stats:
             'contractaddress': contractaddress,
             'blockno': blockno
         }
-        return requests.get(self.url, params=params, headers=self.headers).json()
+        return requests_get(self.url, params=params, headers=self.headers)
