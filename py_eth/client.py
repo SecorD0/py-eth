@@ -55,8 +55,9 @@ class Client:
             except Exception as e:
                 raise exceptions.InvalidProxy(str(e))
 
-        self.w3 = Web3(Web3.HTTPProvider(endpoint_uri=self.network.rpc,
-                                         request_kwargs={'proxies': self.proxy, 'headers': self.headers}))
+        self.w3 = Web3(Web3.HTTPProvider(
+            endpoint_uri=self.network.rpc, request_kwargs={'proxies': self.proxy, 'headers': self.headers}
+        ))
         if private_key:
             self.account = self.w3.eth.account.from_key(private_key=private_key)
 

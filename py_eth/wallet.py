@@ -35,8 +35,9 @@ class Wallet:
 
         contract_address, abi = self.client.contracts.get_contract_attributes(token)
         contract = self.client.contracts.default_token(contract_address=contract_address)
-        return TokenAmount(amount=contract.functions.balanceOf(address).call(),
-                           decimals=contract.functions.decimals().call(), wei=True)
+        return TokenAmount(
+            amount=contract.functions.balanceOf(address).call(), decimals=contract.functions.decimals().call(), wei=True
+        )
 
     def nonce(self, address: Optional[types.Contract] = None) -> int:
         """

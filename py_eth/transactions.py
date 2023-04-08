@@ -1,6 +1,7 @@
 from typing import Union, Optional, Dict, Any, Tuple
 
-from eth_account.datastructures import SignedTransaction
+from eth_account.datastructures import SignedTransaction, SignedMessage
+from eth_account.messages import encode_defunct
 from hexbytes import HexBytes
 from pretty_utils.type_functions.classes import AutoRepr
 from web3 import Web3
@@ -123,8 +124,9 @@ class Tx(AutoRepr):
                 gas_limit = Wei(gas_limit)
 
             tx_params['gas'] = gas_limit.Wei
-            signed_tx = client.w3.eth.account.sign_transaction(transaction_dict=tx_params,
-                                                               private_key=client.account.privateKey)
+            signed_tx = client.w3.eth.account.sign_transaction(
+                transaction_dict=tx_params, private_key=client.account.key
+            )
             tx_hash = client.w3.eth.send_raw_transaction(transaction=signed_tx.rawTransaction)
             if tx_hash:
                 self.hash = tx_hash
@@ -159,8 +161,9 @@ class Tx(AutoRepr):
                 gas_limit = Wei(gas_limit)
 
             tx_params['gas'] = gas_limit.Wei
-            signed_tx = client.w3.eth.account.sign_transaction(transaction_dict=tx_params,
-                                                               private_key=client.account.privateKey)
+            signed_tx = client.w3.eth.account.sign_transaction(
+                transaction_dict=tx_params, private_key=client.account.key
+            )
             tx_hash = client.w3.eth.send_raw_transaction(transaction=signed_tx.rawTransaction)
             if tx_hash:
                 self.hash = tx_hash
@@ -261,14 +264,30 @@ class Transactions:
         return tx_params
 
     def sign(self, tx_params: TxParams) -> SignedTransaction:
+        print("This method will be deprecated in a future update. Use 'sign_transaction' instead.")
+        return self.sign_transaction(tx_params=tx_params)
+
+    def sign_transaction(self, tx_params: TxParams) -> SignedTransaction:
         """
         Sign a transaction.
 
         :param TxParams tx_params: parameters of the transaction
         :return SignedTransaction: the signed transaction
         """
-        return self.client.w3.eth.account.sign_transaction(transaction_dict=tx_params,
-                                                           private_key=self.client.account.privateKey)
+        return self.client.w3.eth.account.sign_transaction(
+            transaction_dict=tx_params, private_key=self.client.account.key
+        )
+
+    def sign_message(self, message: str) -> SignedMessage:
+        """
+        Sign a message.
+
+        :param str message: the message
+        :return str: the signed message
+        """
+        return self.client.w3.eth.account.sign_message(
+            encode_defunct(text=message), private_key=self.client.account.key
+        )
 
     def sign_and_send(self, tx_params: TxParams) -> Tx:
         """
@@ -278,7 +297,7 @@ class Transactions:
         :return Tx: the instance of the sent transaction
         """
         self.auto_add_params(tx_params=tx_params)
-        signed_tx = self.sign(tx_params)
+        signed_tx = self.sign_transaction(tx_params)
         tx_hash = self.client.w3.eth.send_raw_transaction(transaction=signed_tx.rawTransaction)
         return Tx(tx_hash=tx_hash, params=tx_params)
 
@@ -300,11 +319,14 @@ class Transactions:
         erc20_txs = account_api.tokentx(address)['result']
         erc721_txs = account_api.tokennfttx(address)['result']
         if raw:
-            return RawTxHistory(address=address, coin_txs=coin_txs, internal_txs=internal_txs, erc20_txs=erc20_txs,
-                                erc721_txs=erc721_txs)
+            return RawTxHistory(
+                address=address, coin_txs=coin_txs, internal_txs=internal_txs, erc20_txs=erc20_txs,
+                erc721_txs=erc721_txs
+            )
 
-        return TxHistory(address=address, coin_txs=coin_txs, internal_txs=internal_txs, erc20_txs=erc20_txs,
-                         erc721_txs=erc721_txs)
+        return TxHistory(
+            address=address, coin_txs=coin_txs, internal_txs=internal_txs, erc20_txs=erc20_txs, erc721_txs=erc721_txs
+        )
 
     @api_key_required
     def find_txs(self, contract: types.Contract, function_name: Optional[str] = '',
@@ -353,8 +375,10 @@ class Transactions:
         if not owner:
             owner = self.client.account.address
 
-        return TokenAmount(amount=contract.functions.allowance(checksum(owner), checksum(spender)).call(),
-                           decimals=contract.functions.decimals().call(), wei=True)
+        return TokenAmount(
+            amount=contract.functions.allowance(checksum(owner), checksum(spender)).call(),
+            decimals=contract.functions.decimals().call(), wei=True
+        )
 
     def wait_for_receipt(self, tx_hash: Union[str, _Hash32], timeout: Union[int, float] = 120,
                          poll_latency: float = 0.1) -> Dict[str, Any]:
