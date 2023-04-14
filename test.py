@@ -104,11 +104,12 @@ class NFTs:
 
 class Transactions:
     @staticmethod
-    def current_gas_price():
+    def gas_price():
         """Get the current gas price."""
         print('\n--- current_gas_price ---')
         client = Client(private_key='', network=Networks.Ethereum)
-        print(f'''{client.transactions.current_gas_price(w3=client.w3).GWei} GWei''')
+        print(f'''Gas price: {client.transactions.gas_price(w3=client.w3).GWei} GWei
+Max priority fee: {client.transactions.max_priority_fee(w3=client.w3).GWei} GWei''')
 
     @staticmethod
     def estimate_gas():
@@ -117,7 +118,7 @@ class Transactions:
         client = Client(private_key=private_key)
         tx_params = {
             'nonce': 100,
-            'gasPrice': client.transactions.current_gas_price(w3=client.w3).Wei,
+            'gasPrice': client.transactions.gas_price(w3=client.w3).Wei,
             'to': client.account.address,
             'value': 1000000
         }
@@ -125,7 +126,7 @@ class Transactions:
 
     @staticmethod
     def auto_add_params():
-        """Add 'chainId', 'from', 'gasPrice' and 'gas' parameters to transaction parameters if they are missing."""
+        """Add 'chainId', 'from', 'gasPrice' or 'maxFeePerGas' + 'maxPriorityFeePerGas' and 'gas' parameters to transaction parameters if they are missing."""
         print('\n--- auto_add_params ---')
         client = Client(private_key=private_key)
         tx_params = {
@@ -586,7 +587,7 @@ def main() -> None:
 
     print('\n--------- Transactions ---------')
     transactions = Transactions()
-    transactions.current_gas_price()
+    transactions.gas_price()
     transactions.estimate_gas()
     transactions.auto_add_params()
     transactions.parse_params()

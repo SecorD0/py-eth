@@ -102,7 +102,7 @@ class Tx(AutoRepr):
         """
         if self.params and 'nonce' in self.params:
             if not gas_price:
-                gas_price = Transactions.current_gas_price(w3=client.w3).Wei
+                gas_price = Transactions.gas_price(w3=client.w3).Wei
 
             elif isinstance(gas_price, (int, float)):
                 gas_price = GWei(gas_price).Wei
@@ -113,10 +113,16 @@ class Tx(AutoRepr):
             tx_params = {
                 'chainId': client.network.chain_id,
                 'nonce': self.params.get('nonce'),
-                'gasPrice': gas_price,
                 'to': client.account.address,
                 'value': 0
             }
+            if client.network.tx_type == 2:
+                tx_params['maxFeePerGas'] = gas_price
+                tx_params['maxPriorityFeePerGas'] = Transactions.max_priority_fee(w3=client.w3).Wei
+
+            else:
+                tx_params['gasPrice'] = gas_price
+
             if not gas_limit:
                 gas_limit = Transactions.estimate_gas(w3=client.w3, tx_params=tx_params)
 
@@ -147,13 +153,19 @@ class Tx(AutoRepr):
         """
         if self.params and 'nonce' in self.params:
             if not gas_price:
-                gas_price = int(Transactions.current_gas_price(w3=client.w3).Wei * 1.5)
+                gas_price = int(Transactions.gas_price(w3=client.w3).Wei * 1.5)
 
             elif isinstance(gas_price, (int, float)):
                 gas_price = GWei(gas_price).Wei
 
             tx_params = self.params.copy()
-            tx_params['gasPrice'] = gas_price
+            if client.network.tx_type == 2:
+                tx_params['maxFeePerGas'] = gas_price
+                tx_params['maxPriorityFeePerGas'] = Transactions.max_priority_fee(w3=client.w3).Wei
+
+            else:
+                tx_params['gasPrice'] = gas_price
+
             if not gas_limit:
                 gas_limit = Transactions.estimate_gas(w3=client.w3, tx_params=tx_params)
 
@@ -184,6 +196,11 @@ class Transactions:
 
     @staticmethod
     def current_gas_price(w3: Web3) -> Wei:
+        print("This method will be deprecated in a future update. Use 'gas_price' instead.")
+        return Transactions.gas_price(w3=w3)
+
+    @staticmethod
+    def gas_price(w3: Web3) -> Wei:
         """
         Get the current gas price.
 
@@ -191,6 +208,16 @@ class Transactions:
         :return Wei: the current gas price
         """
         return Wei(w3.eth.gas_price)
+
+    @staticmethod
+    def max_priority_fee(w3: Web3) -> Wei:
+        """
+        Get the current max priority fee.
+
+        :param Web3 w3: the Web3 instance
+        :return Wei: the current max priority fee
+        """
+        return Wei(w3.eth.max_priority_fee)
 
     @staticmethod
     def estimate_gas(w3: Web3, tx_params: TxParams) -> Wei:
@@ -235,7 +262,7 @@ class Transactions:
 
     def auto_add_params(self, tx_params: TxParams) -> TxParams:
         """
-        Add 'chainId', 'nonce', 'from', 'gasPrice' and 'gas' parameters to transaction parameters if they are missing.
+        Add 'chainId', 'nonce', 'from', 'gasPrice' or 'maxFeePerGas' + 'maxPriorityFeePerGas' and 'gas' parameters to transaction parameters if they are missing.
 
         :param TxParams tx_params: parameters of the transaction
         :return TxParams: parameters of the transaction with added values
@@ -250,7 +277,7 @@ class Transactions:
             tx_params['from'] = self.client.account.address
 
         if 'gasPrice' not in tx_params and 'maxFeePerGas' not in tx_params:
-            gas_price = self.current_gas_price(w3=self.client.w3).Wei
+            gas_price = self.gas_price(w3=self.client.w3).Wei
             if self.client.network.tx_type == 2:
                 tx_params['maxFeePerGas'] = gas_price
 
@@ -258,10 +285,10 @@ class Transactions:
                 tx_params['gasPrice'] = gas_price
 
         elif 'gasPrice' in tx_params and not int(tx_params['gasPrice']):
-            tx_params['gasPrice'] = self.current_gas_price(w3=self.client.w3).Wei
+            tx_params['gasPrice'] = self.gas_price(w3=self.client.w3).Wei
 
         if 'maxFeePerGas' in tx_params and 'maxPriorityFeePerGas' not in tx_params:
-            tx_params['maxPriorityFeePerGas'] = GWei(1.5).Wei
+            tx_params['maxPriorityFeePerGas'] = self.max_priority_fee(w3=self.client.w3).Wei
 
         if 'gas' not in tx_params or not int(tx_params['gas']):
             tx_params['gas'] = self.estimate_gas(w3=self.client.w3, tx_params=tx_params).Wei
@@ -296,7 +323,7 @@ class Transactions:
 
     def sign_and_send(self, tx_params: TxParams) -> Tx:
         """
-        Sign and send a transaction. Additionally, add 'chainId', 'nonce', 'from', 'gasPrice' and 'gas' parameters to transaction parameters if they are missing.
+        Sign and send a transaction. Additionally, add 'chainId', 'nonce', 'from', 'gasPrice' or 'maxFeePerGas' + 'maxPriorityFeePerGas' and 'gas' parameters to transaction parameters if they are missing.
 
         :param TxParams tx_params: parameters of the transaction
         :return Tx: the instance of the sent transaction
@@ -431,7 +458,7 @@ class Transactions:
 
         amount = amount.Wei
         recipient = checksum(recipient)
-        current_gas_price = self.current_gas_price(w3=self.client.w3)
+        current_gas_price = self.gas_price(w3=self.client.w3)
         if not gas_price:
             gas_price = current_gas_price
 
@@ -448,9 +475,15 @@ class Transactions:
         tx_params = {
             'chainId': self.client.network.chain_id,
             'nonce': nonce,
-            'gasPrice': gas_price.Wei,
             'from': self.client.account.address
         }
+        if self.client.network.tx_type == 2:
+            tx_params['maxFeePerGas'] = gas_price.Wei
+            tx_params['maxPriorityFeePerGas'] = self.client.transactions.max_priority_fee(w3=self.client.w3).Wei
+
+        else:
+            tx_params['gasPrice'] = gas_price.Wei
+
         if contract:
             balance = self.client.wallet.balance(token=contract).Wei
             if balance < amount:
@@ -519,7 +552,7 @@ class Transactions:
             amount = amount.Wei
 
         spender = checksum(spender)
-        current_gas_price = self.current_gas_price(w3=self.client.w3)
+        current_gas_price = self.gas_price(w3=self.client.w3)
         if not gas_price:
             gas_price = current_gas_price
 
@@ -536,11 +569,16 @@ class Transactions:
         tx_params = {
             'chainId': self.client.network.chain_id,
             'nonce': nonce,
-            'gasPrice': gas_price.Wei,
             'from': self.client.account.address,
             'to': contract.address,
             'data': contract.encodeABI('approve', args=TxArgs(spender=spender, amount=amount).tuple())
         }
+        if self.client.network.tx_type == 2:
+            tx_params['maxFeePerGas'] = gas_price.Wei
+            tx_params['maxPriorityFeePerGas'] = self.client.transactions.max_priority_fee(w3=self.client.w3).Wei
+
+        else:
+            tx_params['gasPrice'] = gas_price.Wei
 
         if not gas_limit:
             gas_limit = self.estimate_gas(w3=self.client.w3, tx_params=tx_params)
