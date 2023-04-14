@@ -48,7 +48,7 @@ class Client:
 
                 self.proxy = {'http': self.proxy, 'https': self.proxy}
                 if check_proxy:
-                    your_ip = requests.get('http://eth0.me/', proxies=self.proxy).text.rstrip()
+                    your_ip = requests.get('http://eth0.me/', proxies=self.proxy, timeout=10).text.rstrip()
                     if your_ip not in proxy:
                         raise exceptions.InvalidProxy(f"Proxy doesn't work! Your IP is {your_ip}.")
 
