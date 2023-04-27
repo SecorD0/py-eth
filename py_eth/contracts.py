@@ -97,7 +97,7 @@ class Contracts:
         """
         contract_address, abi = self.get_contract_attributes(contract_address)
         abi = []
-        if self.client.network.api.key:
+        if self.client.network.api and self.client.network.api.key:
             try:
                 abi = self.client.network.api.functions.contract.getabi(contract_address)['result']
                 abi = json.loads(abi)
