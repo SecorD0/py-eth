@@ -4,7 +4,7 @@ from eth_typing import Address
 from web3.contract import Contract
 
 from py_eth.data import types
-from py_eth.data.models import Wei, TokenAmount, RawContract
+from py_eth.data.models import Wei, TokenAmount
 from py_eth.utils import checksum
 
 

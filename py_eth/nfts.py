@@ -2,8 +2,6 @@ import json
 from typing import Union
 from urllib.request import urlopen
 
-from web3.contract import Contract
-
 from py_eth import exceptions
 from py_eth.data import types
 from py_eth.data.models import NFT

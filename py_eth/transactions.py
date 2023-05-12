@@ -11,7 +11,7 @@ from web3.types import TxReceipt, _Hash32, TxParams, Address
 from py_eth import exceptions
 from py_eth.data import types
 from py_eth.data.models import (TxHistory, RawTxHistory, GWei, Wei, Ether, TokenAmount, CommonValues, CoinTx,
-                                RawContract, TxArgs)
+                                TxArgs)
 from py_eth.utils import api_key_required, checksum
 
 
@@ -245,11 +245,8 @@ class Transactions:
         if not input_data and not tx_hash:
             raise exceptions.TransactionException("Specify 'input_data' or 'tx_hash' argument values!")
 
-        if isinstance(contract, RawContract):
-            contract = client.contracts.get(contract.address)
-
-        elif not isinstance(contract, Contract):
-            contract = client.contracts.get(contract)
+        if not isinstance(contract, Contract):
+            contract = client.contracts.get(contract_address=contract)
 
         if input_data:
             input_data = input_data

@@ -198,11 +198,8 @@ class Contracts:
         :param Contract contract: the contract address or instance
         :return List[Function]: functions of the contract
         """
-        if isinstance(contract, RawContract):
-            contract = self.get(contract_address=contract.address)
-
-        elif not isinstance(contract, Contract):
-            contract = self.get(contract_address=checksum(contract))
+        if not isinstance(contract, Contract):
+            contract = self.get(contract_address=contract)
 
         abi = contract.abi or []
         return ABI(abi=abi).functions
