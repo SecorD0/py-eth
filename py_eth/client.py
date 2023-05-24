@@ -43,7 +43,7 @@ class Client:
         self.proxy = proxy
         if self.proxy:
             try:
-                if 'http' not in self.proxy:
+                if 'http' not in self.proxy and 'socks5' not in self.proxy:
                     self.proxy = f'http://{self.proxy}'
 
                 self.proxy = {'http': self.proxy, 'https': self.proxy}
@@ -55,7 +55,7 @@ class Client:
             except Exception as e:
                 raise exceptions.InvalidProxy(str(e))
 
-        self.w3 = Web3(Web3.HTTPProvider(
+        self.w3 = Web3(provider=Web3.HTTPProvider(
             endpoint_uri=self.network.rpc, request_kwargs={'proxies': self.proxy, 'headers': self.headers}
         ))
         if private_key:
