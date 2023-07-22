@@ -7,7 +7,7 @@ with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'README.md'),
 
 setup(
     name='py-eth',
-    version='1.7.0',
+    version='1.7.1',
     license='Apache-2.0',
     author='SecorD',
     description='',
@@ -18,5 +18,8 @@ setup(
         'evmdasm @ git+https://github.com/SecorD0/evmdasm@e8389f223746a0d8c94c627397d0dc639633e869', 'fake-useragent',
         'pretty-utils @ git+https://github.com/SecorD0/pretty-utils@main', 'PySocks', 'python-dotenv', 'web3'
     ],
-    keywords=['eth', 'pyeth', 'py-eth', 'ethpy', 'eth-py', 'web3', 'pyweb3', 'py-web3', 'web3py', 'web3-py']
+    keywords=['eth', 'pyeth', 'py-eth', 'ethpy', 'eth-py', 'web3', 'pyweb3', 'py-web3', 'web3py', 'web3-py'],
+    classifiers=[
+        'Programming Language :: Python :: 3.8'
+    ]
 )

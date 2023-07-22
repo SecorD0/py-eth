@@ -117,8 +117,8 @@ class Tx(AutoRepr):
                 'value': 0
             }
             if client.network.tx_type == 2:
-                tx_params['maxFeePerGas'] = gas_price
                 tx_params['maxPriorityFeePerGas'] = Transactions.max_priority_fee(w3=client.w3).Wei
+                tx_params['maxFeePerGas'] = gas_price + tx_params['maxPriorityFeePerGas']
 
             else:
                 tx_params['gasPrice'] = gas_price
@@ -160,8 +160,8 @@ class Tx(AutoRepr):
 
             tx_params = self.params.copy()
             if client.network.tx_type == 2:
-                tx_params['maxFeePerGas'] = gas_price
                 tx_params['maxPriorityFeePerGas'] = Transactions.max_priority_fee(w3=client.w3).Wei
+                tx_params['maxFeePerGas'] = gas_price + tx_params['maxPriorityFeePerGas']
 
             else:
                 tx_params['gasPrice'] = gas_price
@@ -286,6 +286,7 @@ class Transactions:
 
         if 'maxFeePerGas' in tx_params and 'maxPriorityFeePerGas' not in tx_params:
             tx_params['maxPriorityFeePerGas'] = self.max_priority_fee(w3=self.client.w3).Wei
+            tx_params['maxFeePerGas'] = tx_params['maxFeePerGas'] + tx_params['maxPriorityFeePerGas']
 
         if 'gas' not in tx_params or not int(tx_params['gas']):
             tx_params['gas'] = self.estimate_gas(w3=self.client.w3, tx_params=tx_params).Wei
@@ -475,8 +476,8 @@ class Transactions:
             'from': self.client.account.address
         }
         if self.client.network.tx_type == 2:
-            tx_params['maxFeePerGas'] = gas_price.Wei
             tx_params['maxPriorityFeePerGas'] = self.client.transactions.max_priority_fee(w3=self.client.w3).Wei
+            tx_params['maxFeePerGas'] = gas_price.Wei + tx_params['maxPriorityFeePerGas']
 
         else:
             tx_params['gasPrice'] = gas_price.Wei
@@ -513,7 +514,8 @@ class Transactions:
         tx_params['gas'] = gas_limit.Wei
         if 'value' in tx_params:
             balance = self.client.wallet.balance().Wei
-            available_to_send = balance - tx_params.get('gasPrice') * tx_params.get('gas')
+            gas_price = tx_params.get('gasPrice') if 'gasPrice' in tx_params else tx_params.get('maxFeePerGas')
+            available_to_send = balance - gas_price * tx_params.get('gas')
             if available_to_send < amount:
                 tx_params['value'] = available_to_send
 
@@ -571,8 +573,8 @@ class Transactions:
             'data': contract.encodeABI('approve', args=TxArgs(spender=spender, amount=amount).tuple())
         }
         if self.client.network.tx_type == 2:
-            tx_params['maxFeePerGas'] = gas_price.Wei
             tx_params['maxPriorityFeePerGas'] = self.client.transactions.max_priority_fee(w3=self.client.w3).Wei
+            tx_params['maxFeePerGas'] = gas_price.Wei + tx_params['maxPriorityFeePerGas']
 
         else:
             tx_params['gasPrice'] = gas_price.Wei
