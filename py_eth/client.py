@@ -24,7 +24,6 @@ class Client:
         w3 (Web3): a Web3 instance.
 
     """
-
     network: Network
     account: Optional[LocalAccount]
     w3: Web3
