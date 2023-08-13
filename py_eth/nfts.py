@@ -9,11 +9,21 @@ from py_eth.utils import requests_get
 
 
 class NFTs:
+    """
+    Class with functions related to NTFs.
+
+    Attributes:
+        client (Client): the Client instance.
+
+    """
+
     def __init__(self, client) -> None:
         """
-        Initialize a class with functions related to NTFs.
+        Initialize the class.
 
-        :param Client client: the Client instance
+        Args:
+            client (Client): the Client instance.
+
         """
         self.client = client
 
@@ -21,9 +31,13 @@ class NFTs:
         """
         Get information about a NFT.
 
-        :param Contract contract: the contract address or instance of a NFT collection
-        :param Union[int, str] token_id: the NFT ID to parse the owner and attributes (None)
-        :return NFT: the NFT
+        Args:
+            contract (Contract): the contract address or instance of a NFT collection.
+            token_id (Union[int, str]): the NFT ID to parse the owner and attributes. (None)
+
+        Returns:
+            NFT: the NFT.
+
         """
         contract_address, abi = self.client.contracts.get_contract_attributes(contract)
         contract = self.client.contracts.default_nft(contract_address)

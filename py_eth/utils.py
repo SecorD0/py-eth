@@ -8,7 +8,7 @@ from py_eth import exceptions
 
 
 def api_key_required(func):
-    """Check if the explorer API key is specified."""
+    """Check if the Blockscan API key is specified."""
 
     def func_wrapper(self, *args, **kwargs):
         if not self.client.network.api.key or not self.client.network.api.functions:
@@ -24,8 +24,12 @@ def checksum(address: str) -> ChecksumAddress:
     """
     Convert an address to checksummed.
 
-    :param str address: the address
-    :return ChecksumAddress: the checksummed address
+    Args:
+        address (str): the address.
+
+    Returns:
+        ChecksumAddress: the checksummed address.
+
     """
     return to_checksum_address(address)
 
@@ -34,9 +38,13 @@ def requests_get(url: str, **kwargs) -> Optional[dict]:
     """
     Make a GET request and check if it was successful.
 
-    :param str url: a URL
-    :param kwargs: arguments for a GET request, e.g. 'params', 'headers', 'data' or 'json'
-    :return Optional[dict]: received dictionary in response
+    Args:
+        url (str): a URL.
+        **kwargs: arguments for a GET request, e.g. 'params', 'headers', 'data' or 'json'.
+
+    Returns:
+        Optional[dict]: received dictionary in response.
+
     """
     response = requests.get(url, **kwargs)
     json_response = response.json()
@@ -54,8 +62,12 @@ def get_coin_symbol(chain_id: Union[int, str]) -> str:
     """
     Get a coin symbol on a network with the specified ID.
 
-    :param Union[int, str] chain_id: the network ID
-    :return str: the coin symbol
+    Args:
+        chain_id (Union[int, str]): the network ID.
+
+    Returns:
+        str: the coin symbol.
+
     """
     response = requests_get('https://chainid.network/chains.json')
     network = next((network for network in response if network['chainId'] == int(chain_id)), None)

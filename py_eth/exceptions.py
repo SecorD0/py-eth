@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Dict, Any
 
 import requests
 
@@ -48,10 +48,30 @@ class WalletException(Exception):
 
 
 class HTTPException(Exception):
+    """
+    An exception that occurs when an HTTP request is unsuccessful.
+
+    Attributes:
+        response (Optional[requests.Response]): a 'requests.Response' instance.
+        json_response (Dict[str, Any]): a JSON response to a request.
+        status_code (int): a request status code.
+
+    """
+    response: Optional[requests.Response]
+    json_response: Dict[str, Any]
+    status_code: int
+
     def __init__(self, response: Optional[requests.Response] = None) -> None:
+        """
+        Initialize the class.
+
+        Args:
+            response (Optional[requests.Response]): a 'requests.Response' instance.
+
+        """
         self.response = response
-        self.json_response = self.response.json()
         if self.response:
+            self.json_response = self.response.json()
             self.status_code = response.status_code
 
     def __str__(self):

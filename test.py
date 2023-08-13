@@ -48,7 +48,7 @@ class Contracts:
         print('\n--- get_abi ---')
         network = Networks.Ethereum
         client = Client(private_key='', network=network)
-        print(f'''Python list (parsed from Etherscan):
+        print(f'''Python list (parsed from Blockscan):
 {client.contracts.get_abi(contract_address='0xE592427A0AEce92De3Edee1F18E0157C05861564')}
 ''')
 
@@ -92,7 +92,8 @@ class NFTs:
             '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb', '0xa6c1c8ef0179071c16e066171d660da4ad314687',
             '0x34d85c9cdeb23fa97cb08333b511ac86e1c4e258', '0x23581767a106ae21c074b2276d25e5c3e136a68b',
             '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x7d8e1909d22372e44c7b67bc7d5cba089eedca3d',
-            '0x39ee2c7b3cb80254225884ca001f57118c8f21b6', '0x60e4d786628fea6478f785a6d7e704777c86a7c6')
+            '0x39ee2c7b3cb80254225884ca001f57118c8f21b6', '0x60e4d786628fea6478f785a6d7e704777c86a7c6'
+        )
         for contract_address in contract_addresses:
             nft_info = client.nfts.get_info(contract_address, random.choice((random.randint(0, 9), None)))
             print(nft_info)
@@ -219,16 +220,18 @@ ERC-721: {len(history.erc721.all)}
         """Find all transactions of interaction with the contract, in addition, you can filter transactions by the name of the contract function."""
         print('\n--- find_txs ---')
         client = Client(private_key='', network=Networks.Ethereum)
-        txs = client.transactions.find_txs(contract='0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f',
-                                           address='0x89D022F95dC5073B7479699044fDf6E3Bc74D3b3')
+        txs = client.transactions.find_txs(
+            contract='0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f', address='0x89D022F95dC5073B7479699044fDf6E3Bc74D3b3'
+        )
         print(f'All interaction transactions ({len(txs)}):')
         for tx_hash, tx in txs.items():
             print(f'\t{tx}\n')
 
         function_name = 'swapExactETHForTokens'
-        txs = client.transactions.find_txs(contract='0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f',
-                                           function_name=function_name,
-                                           address='0x89D022F95dC5073B7479699044fDf6E3Bc74D3b3')
+        txs = client.transactions.find_txs(
+            contract='0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f', function_name=function_name,
+            address='0x89D022F95dC5073B7479699044fDf6E3Bc74D3b3'
+        )
         print(f'\n\n{function_name} transactions ({len(txs)}):')
         for tx_hash, tx in txs.items():
             print(f'\t{tx}\n')
@@ -265,10 +268,13 @@ Balance after sending: {client.wallet.balance().Ether} {get_coin_symbol(chain_id
         """Send transaction in token."""
         print('\n--- send_token ---')
         client = Client(private_key=private_key)
-        for contract, amount in ((client.contracts.get('0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844'), 10.5),
-                                 ('0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844', 9999999999)):
+        for contract, amount in (
+                (client.contracts.get('0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844'), 10.5),
+                ('0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844', 9999999999)
+        ):
             if isinstance(contract, Contract):
                 contract_obj = contract
+
             else:
                 contract_obj = client.contracts.get(contract)
 
@@ -355,8 +361,9 @@ Balance after sending: {client.wallet.balance(token=token).Ether}''')
         """Approve token for swap."""
         print('\n--- approve ---')
         client = Client(private_key=private_key)
-        tx = client.transactions.approve(token='0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
-                                         spender='0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45')
+        tx = client.transactions.approve(
+            token='0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984', spender='0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
+        )
         receipt = tx.wait_for_receipt(client=client)
         print(f'''Tx:
 {tx}
