@@ -96,9 +96,9 @@ class APIFunctions:
         self.stats = Stats(self.key, self.url, self.headers)
 
 
-class Account:
+class Module:
     """
-    Class with functions related to 'account' API module.
+    Class with functions related to some API module.
 
     Attributes:
         key (str): an API key.
@@ -125,7 +125,13 @@ class Account:
         self.key = key
         self.url = url
         self.headers = headers
-        self.module = 'account'
+
+
+class Account(Module):
+    """
+    Class with functions related to 'account' API module.
+    """
+    module: str = 'account'
 
     def balance(self, address: str, tag: Union[str, Tag] = Tag.Latest) -> Dict[str, Any]:
         """
@@ -597,36 +603,11 @@ class Account:
         return requests_get(self.url, params=params, headers=self.headers)
 
 
-class Contract:
+class Contract(Module):
     """
     Class with functions related to 'contract' API module.
-
-    Attributes:
-        key (str): an API key.
-        url (str): an API entrypoint URL.
-        headers (Dict[str, Any]): a headers for requests.
-        module (str): a module name.
-
     """
-    key: str
-    url: str
-    headers: Dict[str, Any]
-    module: str
-
-    def __init__(self, key: str, url: str, headers: Dict[str, Any]) -> None:
-        """
-        Initialize the class.
-
-        Args:
-            key (str): an API key.
-            url (str): an API entrypoint URL.
-            headers (Dict[str, Any]): a headers for requests.
-
-        """
-        self.key = key
-        self.url = url
-        self.headers = headers
-        self.module = 'contract'
+    module: str = 'contract'
 
     def getabi(self, address: str) -> Dict[str, Any]:
         """
@@ -695,36 +676,11 @@ class Contract:
         return requests_get(self.url, params=params, headers=self.headers)
 
 
-class Transaction:
+class Transaction(Module):
     """
     Class with functions related to 'transaction' API module.
-
-    Attributes:
-        key (str): an API key.
-        url (str): an API entrypoint URL.
-        headers (Dict[str, Any]): a headers for requests.
-        module (str): a module name.
-
     """
-    key: str
-    url: str
-    headers: Dict[str, Any]
-    module: str
-
-    def __init__(self, key: str, url: str, headers: Dict[str, Any]) -> None:
-        """
-        Initialize the class.
-
-        Args:
-            key (str): an API key.
-            url (str): an API entrypoint URL.
-            headers (Dict[str, Any]): a headers for requests.
-
-        """
-        self.key = key
-        self.url = url
-        self.headers = headers
-        self.module = 'transaction'
+    module: str = 'transaction'
 
     def getstatus(self, txhash: str) -> Dict[str, Any]:
         """
@@ -771,36 +727,11 @@ class Transaction:
         return requests_get(self.url, params=params, headers=self.headers)
 
 
-class Block:
+class Block(Module):
     """
     Class with functions related to 'block' API module.
-
-    Attributes:
-        key (str): an API key.
-        url (str): an API entrypoint URL.
-        headers (Dict[str, Any]): a headers for requests.
-        module (str): a module name.
-
     """
-    key: str
-    url: str
-    headers: Dict[str, Any]
-    module: str
-
-    def __init__(self, key: str, url: str, headers: Dict[str, Any]) -> None:
-        """
-        Initialize the class.
-
-        Args:
-            key (str): an API key.
-            url (str): an API entrypoint URL.
-            headers (Dict[str, Any]): a headers for requests.
-
-        """
-        self.key = key
-        self.url = url
-        self.headers = headers
-        self.module = 'block'
+    module: str = 'block'
 
     def getblockreward(self, blockno: int) -> Dict[str, Any]:
         """
@@ -875,36 +806,11 @@ class Block:
         return requests_get(self.url, params=params, headers=self.headers)
 
 
-class Logs:
+class Logs(Module):
     """
     Class with functions related to 'logs' API module.
-
-    Attributes:
-        key (str): an API key.
-        url (str): an API entrypoint URL.
-        headers (Dict[str, Any]): a headers for requests.
-        module (str): a module name.
-
     """
-    key: str
-    url: str
-    headers: Dict[str, Any]
-    module: str
-
-    def __init__(self, key: str, url: str, headers: Dict[str, Any]) -> None:
-        """
-        Initialize the class.
-
-        Args:
-            key (str): an API key.
-            url (str): an API entrypoint URL.
-            headers (Dict[str, Any]): a headers for requests.
-
-        """
-        self.key = key
-        self.url = url
-        self.headers = headers
-        self.module = 'log'
+    module: str = 'log'
 
     def getLogs(
             self, address: Optional[str], fromBlock: Optional[int], toBlock: Optional[int], page: Optional[int] = None,
@@ -944,36 +850,11 @@ class Logs:
         return requests_get(self.url, params=params, headers=self.headers)
 
 
-class Token:
+class Token(Module):
     """
     Class with functions related to 'token' API module.
-
-    Attributes:
-        key (str): an API key.
-        url (str): an API entrypoint URL.
-        headers (Dict[str, Any]): a headers for requests.
-        module (str): a module name.
-
     """
-    key: str
-    url: str
-    headers: Dict[str, Any]
-    module: str
-
-    def __init__(self, key: str, url: str, headers: Dict[str, Any]) -> None:
-        """
-        Initialize the class.
-
-        Args:
-            key (str): an API key.
-            url (str): an API entrypoint URL.
-            headers (Dict[str, Any]): a headers for requests.
-
-        """
-        self.key = key
-        self.url = url
-        self.headers = headers
-        self.module = 'token'
+    module: str = 'token'
 
     def tokenholderlist(
             self, contractaddress: str, page: Optional[int] = None, offset: Optional[int] = None
@@ -1028,36 +909,11 @@ class Token:
         return requests_get(self.url, params=params, headers=self.headers)
 
 
-class Gastracker:
+class Gastracker(Module):
     """
     Class with functions related to 'gastracker' API module.
-
-    Attributes:
-        key (str): an API key.
-        url (str): an API entrypoint URL.
-        headers (Dict[str, Any]): a headers for requests.
-        module (str): a module name.
-
     """
-    key: str
-    url: str
-    headers: Dict[str, Any]
-    module: str
-
-    def __init__(self, key: str, url: str, headers: Dict[str, Any]) -> None:
-        """
-        Initialize the class.
-
-        Args:
-            key (str): an API key.
-            url (str): an API entrypoint URL.
-            headers (Dict[str, Any]): a headers for requests.
-
-        """
-        self.key = key
-        self.url = url
-        self.headers = headers
-        self.module = 'gastracker'
+    module: str = 'gastracker'
 
     def gasestimate(self, gasprice: int) -> Dict[str, Any]:
         """
@@ -1101,36 +957,11 @@ class Gastracker:
         return requests_get(self.url, params=params, headers=self.headers)
 
 
-class Stats:
+class Stats(Module):
     """
     Class with functions related to 'stats' API module.
-
-    Attributes:
-        key (str): an API key.
-        url (str): an API entrypoint URL.
-        headers (Dict[str, Any]): a headers for requests.
-        module (str): a module name.
-
     """
-    key: str
-    url: str
-    headers: Dict[str, Any]
-    module: str
-
-    def __init__(self, key: str, url: str, headers: Dict[str, Any]) -> None:
-        """
-        Initialize the class.
-
-        Args:
-            key (str): an API key.
-            url (str): an API entrypoint URL.
-            headers (Dict[str, Any]): a headers for requests.
-
-        """
-        self.key = key
-        self.url = url
-        self.headers = headers
-        self.module = 'stats'
+    module: str = 'stats'
 
     def ethsupply(self) -> Dict[str, Any]:
         """
