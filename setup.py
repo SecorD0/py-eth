@@ -7,7 +7,7 @@ with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'README.md'),
 
 setup(
     name='py-eth',
-    version='1.10.2',
+    version='1.10.3',
     license='Apache-2.0',
     author='SecorD',
     description='',
@@ -16,7 +16,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         'evmdasm @ git+https://github.com/SecorD0/evmdasm@e8389f223746a0d8c94c627397d0dc639633e869', 'fake-useragent',
-        'pretty-utils @ git+https://github.com/SecorD0/pretty-utils@main', 'PySocks', 'python-dotenv', 'web3'
+        'pretty-utils @ git+https://github.com/SecorD0/pretty-utils@main', 'PySocks==1.7.1', 'python-dotenv==0.21.1',
+        'web3==5.31.3'
     ],
     keywords=['eth', 'pyeth', 'py-eth', 'ethpy', 'eth-py', 'web3', 'pyweb3', 'py-web3', 'web3py', 'web3-py'],
     classifiers=[
